@@ -45,7 +45,7 @@ function unifyG(a, b, substs) {
         substs.push({key: a, val: b});
         return substs;
     } else if (isVar(b)) {
-        substs.push({key: a, val: b});
+        substs.push({key: b, val: a});
         return substs;
     } else {
         return false;
