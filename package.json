@@ -1,18 +1,19 @@
 {
   "name": "mykanren",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "module": "dist/bundle.js",
   "scripts": {
-    "build": "",
-    "test": "mocha test --recursive"
+    "test": "jest",
+    "package": "rollup src/mykanren.js --file dist/bundle.js --format umd --name 'mykanren'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MichaelLangbein/mykanren.git"
   },
   "author": "Michael Langbein",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/MichaelLangbein/mykanren/issues"
   },
@@ -21,7 +22,7 @@
     "turf": "^3.0.14"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^7.0.1"
+    "jest": "^25.1.0",
+    "rollup": "^1.31.0"
   }
 }
