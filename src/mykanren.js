@@ -14,7 +14,7 @@
  *  - a relation is a function that takes 0 or more variables and returns a goal:
  */
 
- class Variable {
+ class Var {
      constructor(name) {
          this.name = name;
      }
@@ -24,7 +24,7 @@
  }
 
 function isVar(x) {
-    return x instanceof Variable;
+    return x instanceof Var;
 }
 
 function walk(variable, sub) {
@@ -98,8 +98,11 @@ function* doRun(goals, sub) {
 
 function* reify(variable, subs) {
     for (const sub of subs) {
-        const val = walk(variable, sub);
-        yield val;
+        if (sub === false) yield false;
+        const value = walk(variable, sub);
+        const newSub = new Map();
+        newSub.set(variable, value);
+        yield newSub;
     }
 }
 
@@ -128,5 +131,5 @@ function run(x, goals) {
 
 
 module.exports = {
-    Variable, trueo, falseo, unifyo, runN, run
+    Var, trueo, falseo, unifyo, runN, run
 };
