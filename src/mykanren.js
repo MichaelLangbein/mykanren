@@ -3,12 +3,11 @@
  *  - a variable is *fresh* when it has no association.
  * 
  * Substitutions:
- *  - a substitution is 
+ *  - a substitution is a frame: [{x: 1, y: 'v', z: x}]
  * 
  * Goals: (functions ending in 'G')
  *  - a goal is a function nameG: subs -> subs[] 
- *    That is a function that maps one substitution to an array (actually a stream) of zero or more substitutions.
- *    A substitution is a frame: [{x: 1}, {y: 'v'}, {z: x}]
+ *    That is a function that maps one substitution to a stream of zero or more substitutions.
  * 
  * Relations: (functions ending in 'o')
  *  - a relation is a function that takes 0 or more variables and returns a goal:
@@ -38,12 +37,12 @@ function walk(variable, sub) {
     }
 }
 
-function* trueG(subs) {
-    yield subs;
+function* trueG(sub) {
+    yield sub;
 }
 
-function* falseG(subs) {
-    yield false;
+function* falseG(sub) {
+    yield new Map();
 }
 
 function* unifyG(a, b, sub) {
@@ -58,7 +57,7 @@ function* unifyG(a, b, sub) {
         sub.set(b, a);
         yield sub;
     } else {
-        yield false;
+        yield new Map();
     }
 }
 
@@ -84,9 +83,7 @@ function* doRun(goals, sub) {
     const goal1 = goals[0];
     const restGoals = goals.slice(1);
     for (const newsub of goal1(sub)) {
-        if (newsub === false) {
-            yield false;
-        } else if (restGoals.length > 0) {
+        if (restGoals.length > 0) {
             for (const newnewsubst of doRun(restGoals, newsub)) {
                 yield newnewsubst;
             }
@@ -98,10 +95,11 @@ function* doRun(goals, sub) {
 
 function* reify(variable, subs) {
     for (const sub of subs) {
-        if (sub === false) yield false;
         const value = walk(variable, sub);
         const newSub = new Map();
-        newSub.set(variable, value);
+        if (!isVar(value)) {
+            newSub.set(variable, value);
+        }
         yield newSub;
     }
 }
@@ -110,7 +108,6 @@ function take(n, generator) {
     const out = [];
     let i = 0;
     for (const val of generator) {
-        if (val === false) return [];
         out.push(val);
         i++;
         if (n > 0 && i > n) break;

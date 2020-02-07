@@ -31,7 +31,7 @@ describe('testing mykanren.js', () => {
             unifyo(1, x),
             unifyo(x, 2)
         ]);
-        expect(results3).toEqual([]);
+        expect(results3).toEqual([new Map()]);
 
         const results4 = run(x, [
             unifyo(x, y),
